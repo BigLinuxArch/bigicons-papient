@@ -1,0 +1,135 @@
+pkgname=bigicons-papient
+pkgdesc="Package icons for biglinux based in Papirus"
+pkgver=$(date +%y.%m.%d)
+pkgrel=$(date +%H%M)
+arch=('any')
+license=('GPL3')
+url="https://github.com/biglinux/$pkgname"
+provides=("$pkgname")
+source=("git+${url}.git")
+md5sums=('SKIP')
+if [ -e "${pkgname}.install" ];then
+    install=${pkgname}.install
+elif [ -e "pkgbuild.install" ];then
+    install=pkgbuild.install
+fi
+
+package() {
+    # Verify default folder
+    if [ -d "${srcdir}/${pkgname}/${pkgname}" ]; then
+        InternalDir="${srcdir}/${pkgname}/${pkgname}"
+    else
+        InternalDir="${srcdir}/${pkgname}"
+    fi
+
+    # Copy files
+    if [ -d "${InternalDir}/usr" ]; then
+        cp -r "${InternalDir}/usr" "${pkgdir}/"
+    fi
+
+    if [ -d "${InternalDir}/etc" ]; then
+        cp -r "${InternalDir}/etc" "${pkgdir}/"
+    fi
+
+    if [ -d "${InternalDir}/opt" ]; then
+        cp -r "${InternalDir}/opt" "${pkgdir}/"
+    fi
+    
+    ############# Papirus Icons ##################
+    cd "${pkgdir}/usr/share/icons/"
+    git clone https://github.com/PapirusDevelopmentTeam/papirus-icon-theme.git
+    
+    # Copy icons
+    cp -Rf papirus-icon-theme/Papirus/16x16 bigicons-papient/
+    cp -Rf papirus-icon-theme/Papirus/22x22 bigicons-papient/
+    cp -Rf papirus-icon-theme/Papirus/48x48 bigicons-papient/
+
+    cp -Rf papirus-icon-theme/Papirus-Dark/16x16 bigicons-papient-dark/
+    cp -Rf papirus-icon-theme/Papirus-Dark/22x22 bigicons-papient-dark/
+    cp -Rf papirus-icon-theme/Papirus-Dark/22x22/ bigicons-papient-dark/22x22/
+    
+    # Not symbolic links share with not dark theme
+    cd bigicons-papient-dark
+    cd 16x16
+    rm apps categories emblems emotes mimetypes panel status
+    ln -s ../../bigicons-papient/16x16/apps apps 
+    ln -s ../../bigicons-papient/16x16/apps categories
+    ln -s ../../bigicons-papient/16x16/apps emblems
+    ln -s ../../bigicons-papient/16x16/apps emotes
+    ln -s ../../bigicons-papient/16x16/apps mimetypes
+    ln -s ../../bigicons-papient/16x16/apps panel
+    ln -s ../../bigicons-papient/16x16/apps status
+
+    cd ../22x22
+    rm animations devices places apps categories emblems emotes mimetypes panel status
+    ln -s ../../bigicons-papient/22x22/apps apps
+    ln -s ../../bigicons-papient/22x22/categories categories
+    ln -s ../../bigicons-papient/22x22/emblems emblems
+    ln -s ../../bigicons-papient/22x22/emotes emotes
+    ln -s ../../bigicons-papient/22x22/mimetypes mimetypes
+    ln -s ../../bigicons-papient/22x22/panel panel
+    ln -s ../../bigicons-papient/22x22/status status
+    ln -s ../../bigicons-papient/22x22/animations animations
+    ln -s ../../bigicons-papient/22x22/devices devices
+    ln -s ../../bigicons-papient/22x22/places places
+
+    cd ..
+    ln -s ../bigicons-papient/48x48 48x48
+    cd ..    
+
+    # Use on scaled screen
+    cd bigicons-papient
+    ln -s 16x16 16x16@2x
+    ln -s 22x22 22x22@2x
+    ln -s 48x48 48x48@2x
+    cd ../
+    
+    cd bigicons-papient-dark
+    ln -s 16x16 16x16@2x
+    cd 16x16
+    rm symbolic
+    ln -s ../../bigicons-papient/16x16/symbolic/ .
+    cd ..
+    
+    ln -s 22x22 22x22@2x
+    cd 22x22
+    rm symbolic
+    ln -s ../../bigicons-papient/22x22/symbolic/ .
+    cd ..
+
+    ln -s 48x48 48x48@2x
+    cd ../
+
+    
+#     cp -f papirus-icon-theme/Papirus/16x16/apps/com.github.bajoja.indicator-kdeconnect.svg bigicons-papient/16x16/symbolic/apps/
+#     cp -f papirus-icon-theme/Papirus/16x16/apps/kdeconnect.svg bigicons-papient/16x16/symbolic/apps/kdeconnect.svg
+
+# #     # Kalarm symbolic dark PAPIENT
+#     cd bigicons-papient-dark/16x16/panel; ln -s alarm-clock-panel.svg kalarm-symbolic.svg
+#     cd ../../../
+# # 
+# #     # Kalarm symbolic PAPIENT
+#     cd bigicons-papient/16x16/panel; ln -s alarm-clock-panel.svg kalarm-symbolic.svg
+#     cd ../../../
+# # 
+# #     # manjaro-settings-manager.svg symbolic dark PAPIENT
+#     cd bigicons-papient-dark/16x16/panel; ln -s manjaro-settings-manager-panel.svg manjaro-settings-manager.svg
+#     cd ../../../
+# # 
+# #     # manjaro-settings-manager.svg symbolic PAPIENT
+#     cd bigicons-papient/16x16/panel; ln -s manjaro-settings-manager-panel.svg manjaro-settings-manager.svg
+#     cd ../../../
+
+    # Fix menu icon used on dolphin and others
+    cd bigicons-papient/16x16/actions
+    ln -sf view-media-playlist.svg open-menu.svg
+    ln -sf view-media-playlist.svg open-menu-symbolic.svg
+    cd ../../../
+
+    cd bigicons-papient-dark/16x16/actions
+    ln -sf view-media-playlist.svg open-menu.svg
+    ln -sf view-media-playlist.svg open-menu-symbolic.svg
+    cd ../../../
+
+    rm -R papirus-icon-theme
+}
