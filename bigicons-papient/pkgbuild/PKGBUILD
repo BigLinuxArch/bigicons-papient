@@ -1,12 +1,12 @@
 pkgname=bigicons-papient
 pkgdesc="Package icons for biglinux based in Papirus"
-pkgver=$(date +%y.%m.%d)
-pkgrel=$(date +%H%M)
+pkgver=25.10.18
+pkgrel=0043
 arch=('any')
 license=('GPL3')
 url="https://github.com/biglinux/$pkgname"
 provides=("$pkgname")
-source=("git+${url}.git")
+source=("git+${url}.git#branch=stable-2025-10-17_21-41")
 md5sums=('SKIP')
 if [ -e "${pkgname}.install" ];then
     install=${pkgname}.install
