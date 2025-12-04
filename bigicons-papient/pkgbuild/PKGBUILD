@@ -1,7 +1,7 @@
 pkgname=bigicons-papient
 pkgdesc="Package icons for biglinux based in Papirus"
-pkgver=25.11.27
-pkgrel=0523
+pkgver=25.12.03
+pkgrel=0459
 arch=('any')
 license=('GPL3')
 url="https://github.com/biglinux/$pkgname"
